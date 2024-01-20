@@ -9,12 +9,6 @@ defsize=7
 filename=None
 saved=None
 
-root=tk.Tk()
-
-root.title(f"Notepad")
-root.geometry("600x400")
-root.minsize(30,20)
-
 class FontDialog(sd.Dialog):
 	def body(self, master):
 		self.title("Fonts")
@@ -179,88 +173,95 @@ def currIndex():
 	index=text.index(tk.CURRENT).split(".")
 	return f"line {index[0]} char {index[1]}"
 
-mainmenu=tk.Menu(root)
+if __name__=="__main__":
+	root=tk.Tk()
+	
+	root.title(f"Notepad")
+	root.geometry("600x400")
+	root.minsize(30,20)
+	
+	mainmenu=tk.Menu(root)
+	
+	m1=tk.Menu(mainmenu, tearoff=0)
+	m1.add_command(label="New", command=newfile)
+	m1.add_command(label="Open...", command=openfile)
+	m1.add_command(label="Save", command=save)
+	m1.add_command(label="Save as", command=saveasfile)
+	m1.add_separator()
+	m1.add_command(label="Page Setup")
+	m1.add_command(label="Print")
+	m1.add_separator()
+	m1.add_command(label="Exit", command=exit)
+	mainmenu.add_cascade(label="File", menu=m1)
 
-m1=tk.Menu(mainmenu)
-m1.add_command(label="New", command=newfile)
-m1.add_command(label="Open...", command=openfile)
-m1.add_command(label="Save", command=save)
-m1.add_command(label="Save as", command=saveasfile)
-m1.add_separator()
-m1.add_command(label="Page Setup")
-m1.add_command(label="Print")
-m1.add_separator()
-m1.add_command(label="Exit", command=exit)
-mainmenu.add_cascade(label="File", menu=m1)
+	m2=tk.Menu(mainmenu, tearoff=0)
+	m2.add_command(label="Undo", command=undo)
+	m2.add_command(label="Redo", command=redo)
+	m2.add_separator()
+	m2.add_command(label="Cut", command=cut)
+	m2.add_command(label="Copy", command=copy)
+	m2.add_command(label="Paste", command=paste)
+	m2.add_command(label="Delete", command=delete)
+	m2.add_command(label="Clear", command=clear)
+	m2.add_separator()
+	m2.add_command(label="Find")
+	m2.add_command(label="Find Next")
+	m2.add_command(label="Replace")
+	m2.add_command(label="Go To...")
+	m2.add_separator()
+	m2.add_command(label="Select All", command=select)
+	m2.add_command(label="Date/Time", command=timedate)
+	mainmenu.add_cascade(label="Edit", menu=m2)
+	
+	m3=tk.Menu(mainmenu, tearoff=0)
+	m3.add_command(label="Word Wrap", command=wordwrap)
+	m3.add_command(label="Unwrap", command=unwrap)
+	m3.add_command(label="Font...", command=fonts)
+	mainmenu.add_cascade(label="Format", menu=m3)
 
-m2=tk.Menu(mainmenu)
-m2.add_command(label="Undo", command=undo)
-m2.add_command(label="Redo", command=redo)
-m2.add_separator()
-m2.add_command(label="Cut", command=cut)
-m2.add_command(label="Copy", command=copy)
-m2.add_command(label="Paste", command=paste)
-m2.add_command(label="Delete", command=delete)
-m2.add_command(label="Clear", command=clear)
-m2.add_separator()
-m2.add_command(label="Find")
-m2.add_command(label="Find Next")
-m2.add_command(label="Replace")
-m2.add_command(label="Go To...")
-m2.add_separator()
-m2.add_command(label="Select All", command=select)
-m2.add_command(label="Date/Time", command=timedate)
-mainmenu.add_cascade(label="Edit", menu=m2)
+	m4=tk.Menu(mainmenu, tearoff=0)
 
-m3=tk.Menu(mainmenu)
-m3.add_command(label="Word Wrap", command=wordwrap)
-m3.add_command(label="Unwrap", command=unwrap)
-m3.add_command(label="Font...", command=fonts)
-mainmenu.add_cascade(label="Format", menu=m3)
+	m4m1=tk.Menu(m4, tearoff=0)
+	m4m1.add_command(label="Zoom In", command=zoomin)
+	m4m1.add_command(label="Zoom Out", command=zoomout)
+	m4m1.add_command(label="Restore Default Zoom", command=defaultzoom)
+	m4.add_cascade(label="Zoom", menu=m4m1)
 
-m4=tk.Menu(mainmenu)
+	m4.add_command(label="Status Bar")
+	mainmenu.add_cascade(label="View", menu=m4)
 
-m4m1=tk.Menu(m4)
-m4m1.add_command(label="Zoom In", command=zoomin)
-m4m1.add_command(label="Zoom Out", command=zoomout)
-m4m1.add_command(label="Restore Default Zoom", command=defaultzoom)
-m4.add_cascade(label="Zoom", menu=m4m1)
-
-m4.add_command(label="Status Bar")
-mainmenu.add_cascade(label="View", menu=m4)
-
-m5=tk.Menu(mainmenu)
-m5.add_command(label="View Help", command=help)
-m5.add_separator()
-m5.add_command(label="About Us", command=about)
-mainmenu.add_cascade(label="Help", menu=m5)
-
-root.config(menu=mainmenu)
-
-entryframe=tk.Frame(root)
-entryframe.pack(fill=tk.BOTH, expand=True)
-
-yscroll=tk.Scrollbar(entryframe)
-yscroll.pack(side=tk.RIGHT, fill=tk.Y)
-
-
-text=tk.Text(entryframe)
-text.pack(fill=tk.BOTH, expand=True)
-val=text.get(1.0, tk.END)
-
-xscroll=tk.Scrollbar(entryframe, orient=tk.HORIZONTAL)
-xscroll.pack(side=tk.BOTTOM, fill=tk.X)
-
-yscroll.config(command=text.yview)
-text.config(yscrollcommand=yscroll.set)
-xscroll.config(command=text.xview)
-text.config(xscrollcommand=xscroll.set)
-
-footer=tk.Frame(root)
-footer.pack(side=tk.BOTTOM, fill=tk.X)
-l1=tk.Label(footer, text="Ready")
-l1.pack(side=tk.LEFT, anchor="nw")
-l2=tk.Label(footer, text=currIndex())
-l2.pack(anchor="n")
-
-root.mainloop()
+	m5=tk.Menu(mainmenu, tearoff=0)
+	m5.add_command(label="View Help", command=help)
+	m5.add_separator()
+	m5.add_command(label="About Us", command=about)
+	mainmenu.add_cascade(label="Help", menu=m5)
+	
+	root.config(menu=mainmenu)
+	
+	entryframe=tk.Frame(root)
+	entryframe.pack(fill=tk.BOTH, expand=True)
+	
+	yscroll=tk.Scrollbar(entryframe)
+	yscroll.pack(side=tk.RIGHT, fill=tk.Y)
+	
+	
+	text=tk.Text(entryframe)
+	text.pack(fill=tk.BOTH, expand=True)
+	val=text.get(1.0, tk.END)
+	
+	xscroll=tk.Scrollbar(entryframe, orient=tk.HORIZONTAL)
+	xscroll.pack(side=tk.BOTTOM, fill=tk.X)
+	
+	yscroll.config(command=text.yview)
+	text.config(yscrollcommand=yscroll.set)
+	xscroll.config(command=text.xview)
+	text.config(xscrollcommand=xscroll.set)
+	
+	footer=tk.Frame(root)
+	footer.pack(side=tk.BOTTOM, fill=tk.X)
+	l1=tk.Label(footer, text="Ready")
+	l1.pack(side=tk.LEFT, anchor="nw")
+	l2=tk.Label(footer, text=currIndex())
+	l2.pack(anchor="n")
+	
+	root.mainloop()
