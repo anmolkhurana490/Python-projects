@@ -2,7 +2,7 @@ from newsapi import NewsApiClient
 import pycountry
 
 #init
-key="42f1f134afd9469ba31c9e2cb6951b12"
+key="your-api-key"
 newsapi=NewsApiClient(api_key=key)
 
 def countryavail():
